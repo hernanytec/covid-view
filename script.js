@@ -26,6 +26,8 @@ const tiles = L.tileLayer(tileURL, attribution)
 tiles.addTo(map)
 
 function getColor(d) {
+    if (d === 0)
+        return '#00ED00'
     return d > 1000 ? '#800026' :
         d > 500 ? '#BD0026' :
             d > 200 ? '#E31A1C' :
@@ -33,7 +35,7 @@ function getColor(d) {
                     d > 50 ? '#FD8D3C' :
                         d > 20 ? '#FEB24C' :
                             d > 10 ? '#FED976' :
-                                '#FFEDA0';
+                                '#FFEAB3';
 }
 
 function style(feature) {
@@ -110,7 +112,6 @@ function resetHighlight(e) {
 }
 
 function zoomToFeature(e) {
-    console.log(e.target)
     map.fitBounds(e.target.getBounds());
 }
 
