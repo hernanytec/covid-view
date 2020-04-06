@@ -16,14 +16,7 @@ getStatistics = feature => {
     return api_data.filter(state => state.uf == feature.UF_05)[0]
 }
 
-const attribution = '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
-const tileURL = 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png'
-
 let map = L.map('mapid').setView(BRASILIA_LOCATION, ZOOM_LEVEL)
-
-const tiles = L.tileLayer(tileURL, attribution)
-
-tiles.addTo(map)
 
 function getColor(d) {
     if (d === 0)
@@ -55,7 +48,7 @@ window.onload = async function () {
     const statesData = await getData(GEOJSON_URL)
     api_data = await getData(API_URL)
     api_data = api_data.data
-
+    this.console.log(api_data)
     geojson = L.geoJson(statesData, {
         style: style,
         onEachFeature: onEachFeature
@@ -77,8 +70,21 @@ info.update = function (props) {
     //data = api_data.filter(state => state.uf == props.UF_05)[0]
     try {
         data = getStatistics(props)
-        this._div.innerHTML = '<h4>Quantidade de casos do COVID-19</h4>' + (props ?
-            '<b>' + data.state + '</b><br />' + data.cases + ' casos confirmados'
+        this._div.innerHTML = '<h4>Quantidade de casos do COVID-19</h4> <br/>' + (props ?
+            `
+            <b>${data.state}:</b> 
+            <ul>
+                <li>
+                    ${data.cases} casos confirmados
+                </li>
+                <li>
+                    ${data.suspects} casos suspeitos 
+                </li>
+                <li>
+                    ${data.deaths} mortes
+                </li>
+            </ul>
+            `
             : 'Passe o mouse sobre um estado');
     } catch (error) {
 
@@ -113,6 +119,7 @@ function resetHighlight(e) {
 
 function zoomToFeature(e) {
     map.fitBounds(e.target.getBounds());
+    highlightFeature(e)
 }
 
 function onEachFeature(feature, layer) {
