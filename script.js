@@ -44,10 +44,31 @@ function style(feature) {
     };
 }
 
+const fillTable = (data) => {
+
+    let table = document.querySelector('table')
+
+    for (let i = data.length - 1; i >= 0; i--) {
+        let row = table.insertRow(1)
+
+        let state = row.insertCell(0)
+        let cases = row.insertCell(1)
+        let suspects = row.insertCell(2)
+        let deaths = row.insertCell(3)
+
+        state.innerHTML = data[i].state
+        cases.innerHTML = data[i].cases
+        suspects.innerHTML = data[i].suspects
+        deaths.innerHTML = data[i].deaths
+    }
+
+}
+
 window.onload = async function () {
     const statesData = await getData(GEOJSON_URL)
     api_data = await getData(API_URL)
     api_data = api_data.data
+    fillTable(api_data)
     this.console.log(api_data)
     geojson = L.geoJson(statesData, {
         style: style,
@@ -67,7 +88,6 @@ info.onAdd = function (map) {
 
 // method that we will use to update the control based on feature properties passed
 info.update = function (props) {
-    //data = api_data.filter(state => state.uf == props.UF_05)[0]
     try {
         data = getStatistics(props)
         this._div.innerHTML = '<h4>Quantidade de casos do COVID-19</h4> <br/>' + (props ?
