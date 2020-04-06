@@ -68,8 +68,9 @@ window.onload = async function () {
     const statesData = await getData(GEOJSON_URL)
     api_data = await getData(API_URL)
     api_data = api_data.data
+
     fillTable(api_data)
-    this.console.log(api_data)
+
     geojson = L.geoJson(statesData, {
         style: style,
         onEachFeature: onEachFeature
